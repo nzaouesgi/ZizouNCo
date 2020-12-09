@@ -96,6 +96,11 @@ contract RealEstateMarketContract {
     ownerToProperties[msg.sender].push(_id);
   }
 
+  function countProperties() public returns (uint) {
+
+    return properties.length;
+  }
+
   /*function getPropertiesData () external view returns (Property [100] memory){
     
     Property[100] memory _p;
