@@ -68,7 +68,7 @@ contract RealEstateMarketContract {
       }
   }
   
-  function buyProperty (uint _id) public payable {
+  function buyProperty (uint _id) external payable {
 
     require(_id < properties.length);
 

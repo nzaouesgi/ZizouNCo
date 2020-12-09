@@ -1,32 +1,78 @@
 import React, {useEffect, useState} from 'react'
 
-const ListEstate = (props) => {
+const ListEstate = ({contract, reload, accounts, web3}) => {
 
-    const {contract, accounts} = props;
-    const [setEstateList, estateListe] = useState([])
+    const [estateListe, setEstateList] = useState([])
+
+    const buyEstate = async (index, price) => {
+        await contract.methods
+            .buyProperty(index)
+            .send({ from: accounts[0], value: web3.utils.toWei("1.0")})
+    }
 
     useEffect(() => {
 
         const getContract = async () => {
 
-            // await contract.methods.addProperty(1, 
-            //     'blablabla', 
-            //     'blablabla', 
-            //     [], 
-            //     []
-            // ).send({ from: accounts[0] })
+            const numberOfProperties = await contract.methods.countProperties().call()
+            const allProperties = []
 
-            console.log(await contract.methods.properties(0).call())
-            console.log(await contract.methods.properties)
+            if(numberOfProperties > 0){
+
+                for (const index of Array(parseInt(numberOfProperties)).keys()){
+
+                    const property = await contract.methods.properties(index).call()
+                    // console.log(property)
+                    allProperties.push(property)
+                }
+
+                console.log(allProperties)
+
+                setEstateList(allProperties)
+            }
         }
 
         getContract()
         
 
-    }, [estateListe, contract])
+    }, [contract, reload])
 
     return (
-        <h1>Test</h1>
+        <div>
+            { estateListe.length > 0 ? 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {estateListe
+                            .filter(estate => estate.forSale)
+                            .map((estate, index) => (
+                                <tr key={index}>
+                                    <td>{estate.location}</td>
+                                    <td>{estate.description}</td>
+                                    <td>{estate.price}</td>
+                                    {estate.ownerAddress !== accounts[0] && (
+                                        <td>
+                                            <button 
+                                                onClick={() => buyEstate(index, estate.price)}>
+                                                Buy
+                                            </button>
+                                        </td>
+                                    )}
+                                </tr>
+                            )
+                        )}
+                    </tbody>
+                </table>
+                :
+                <h4>No estate</h4>
+            }
+        </div>
     )
 }
 

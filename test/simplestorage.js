@@ -5,19 +5,23 @@ contract("RealEstateMarketContract", accounts => {
     
     const realEstateMarketContractInstance = await RealEstateMarket.deployed();
 
-    console.log(realEstateMarketContractInstance.addProperty)
+    // console.log(realEstateMarketContractInstance.addProperty)
 
-    await realEstateMarketContractInstance.addProperty.sendTransaction(
-      1, 
-      'blablabla', 
-      'blablabla', 
-      [], 
-      [], 
-      { from: accounts[0] })
+    // await realEstateMarketContractInstance.addProperty.sendTransaction(
+    //   1, 
+    //   'blablabla', 
+    //   'blablabla', 
+    //   [], 
+    //   [], 
+    //   { from: accounts[0] })
 
-    const properties = await realEstateMarketContractInstance.properties.call(0)
+    // const properties = await realEstateMarketContractInstance.properties.call(0)
 
-    console.log(properties)
+    // console.log(properties)
+
+    // console.log((await realEstateMarketContractInstance.countProperties.call()).toString())
+
+    realEstateMarketContractInstance.buyProperty.call(1, { from: accounts[0], value: "1"})
 
     // Set value of 89
     //await readEstateMarketInstance.set(89, { from: accounts[0] });
