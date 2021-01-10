@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { Formik } from 'formik'
 
-const AddEstate = ({contract, accounts, askReload}) => {
+const AddEstate = ({contract, accounts, askReload, web3}) => {
 
     const defaultValue = {'price': 0, 'description': '', 'location': ''}
     const [isError, setIsError] = useState(false)
@@ -25,7 +25,7 @@ const AddEstate = ({contract, accounts, askReload}) => {
                     try {
 
                         await contract.methods.addProperty(
-                            values.price, 
+                            web3.utils.toWei(values.price), 
                             values.location, 
                             values.description, 
                             [], 

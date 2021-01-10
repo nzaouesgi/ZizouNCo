@@ -7,7 +7,7 @@ import AddEstate from './AddEstate'
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, reloadList: false};
+  state = { storageValue: 0, web3: null, accounts: null, contract: null, reloadList: true};
 
   componentDidMount = async () => {
     try {
@@ -49,12 +49,14 @@ class App extends Component {
           accounts={this.state.accounts} 
           contract={this.state.contract} 
           reload={this.state.reloadList}
+          endReload={() => this.setState({reloadList: false})}
           web3={this.state.web3}
         />
         <AddEstate 
           accounts={this.state.accounts} 
           contract={this.state.contract} 
           askReload={() => this.setState({reloadList: true})}
+          web3={this.state.web3}
         />
       </div>
     );

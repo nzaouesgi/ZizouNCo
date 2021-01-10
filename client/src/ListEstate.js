@@ -1,41 +1,44 @@
 import React, {useEffect, useState} from 'react'
 
-const ListEstate = ({contract, reload, accounts, web3}) => {
+const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
 
     const [estateListe, setEstateList] = useState([])
 
     const buyEstate = async (index, price) => {
         await contract.methods
             .buyProperty(index)
-            .send({ from: accounts[0], value: web3.utils.toWei("1.0")})
+            .send({ from: accounts[0], value: web3.utils.toWei(price)})
     }
 
     useEffect(() => {
 
         const getContract = async () => {
 
-            const numberOfProperties = await contract.methods.countProperties().call()
-            const allProperties = []
+            if(reload){
 
-            if(numberOfProperties > 0){
-
-                for (const index of Array(parseInt(numberOfProperties)).keys()){
-
-                    const property = await contract.methods.properties(index).call()
-                    // console.log(property)
-                    allProperties.push(property)
+                const numberOfProperties = await contract.methods.countProperties().call()
+                const allProperties = []
+    
+                if(numberOfProperties > 0){
+    
+                    for (const index of Array(parseInt(numberOfProperties)).keys()){
+    
+                        const property = await contract.methods.properties(index).call()
+                        // console.log(property)
+                        allProperties.push(property)
+                    }
+    
+                    setEstateList(allProperties)
                 }
 
-                console.log(allProperties)
-
-                setEstateList(allProperties)
+                endReload()
             }
         }
 
         getContract()
         
 
-    }, [contract, reload])
+    }, [contract, reload, endReload])
 
     return (
         <div>
