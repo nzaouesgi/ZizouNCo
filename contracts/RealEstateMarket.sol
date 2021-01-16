@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.21 <0.7.0;
+pragma experimental ABIEncoderV2;
 
-contract RealEstateMarketContract {
+contract RealEstateMarket {
 
   struct Document {
-    uint id;
+    string identifier;
     bytes32 integrity;
   }
   
@@ -40,11 +41,11 @@ contract RealEstateMarketContract {
     uint _price, 
     string memory _location,
     string memory _description,
-    uint[] memory _documentIds,
+    string[] memory _documentIdentifiers,
     bytes32[] memory _documentHashes
     ) public {
 
-      require(_documentIds.length == _documentHashes.length);
+      require(_documentIdentifiers.length == _documentHashes.length);
 
       properties.push(
         Property(
@@ -60,9 +61,9 @@ contract RealEstateMarketContract {
       uint propertyId = properties.length - 1;
       ownerToProperties[msg.sender].push(propertyId);
 
-      for (uint i=0; i< _documentIds.length; i++) {
+      for (uint i=0; i< _documentIdentifiers.length; i++) {
         documents.push(
-          Document(_documentIds[i], _documentHashes[i])
+          Document(_documentIdentifiers[i], _documentHashes[i])
         );
         propertyToDocuments[propertyId].push(documents.length - 1);
       }
@@ -96,32 +97,22 @@ contract RealEstateMarketContract {
     ownerToProperties[msg.sender].push(_id);
   }
 
-  /*function getPropertiesData () external view returns (Property [100] memory){
-    
-    Property[100] memory _p;
+  uint constant itemsPerPage = 25;
 
-    return _p;
+  function paginateProperties (uint _page) external view 
+    returns (Property[itemsPerPage] memory items, uint itemsCount, uint itemsTotal) {
+    
+    Property[itemsPerPage] memory _items;
+
+    uint _itemsCount = 0;
+
+    for (uint i = _page * itemsPerPage; i < itemsPerPage + (_page * itemsPerPage); i ++){
+      if (i < properties.length){
+        _items[_itemsCount] = properties[i];
+        _itemsCount++;
+      }
+    }
+
+    return (_items, _itemsCount, properties.length);
   }
-
-  function getPropertyData (uint _id) external view 
-    returns (
-      string memory description, 
-      string memory location,
-      uint price,
-      address ownerAddress,
-      bool forSale,
-      uint createdAt
-    ) {
-
-    Property storage p = properties[_id];
-    
-    return (
-      p.description, 
-      p.location,
-      p.price,
-      p.ownerAddress,
-      p.forSale,
-      p.createdAt
-    );
-  }*/
 }
