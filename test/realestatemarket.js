@@ -47,10 +47,10 @@ contract("RealEstateMarket", accounts => {
 
       this.instance = await RealEstateMarket.new()
 
-      const count = chance.integer({ min: 30, max: 100 })
-
-      this.fakePropertiesData = range(count)
-        .map(_v => createFakePropertyData())
+      this.fakePropertiesData = range(chance.integer({ 
+        min: 3,
+        max: 30
+      })).map(_v => createFakePropertyData())
 
       await Promise.all(
         this.fakePropertiesData
@@ -91,9 +91,10 @@ contract("RealEstateMarket", accounts => {
         })
       }
 
+      console.log({ length: this.fakePropertiesData.length })
+
       await Promise.all(
-        range(Math.ceil(this.fakePropertiesData.length / itemsPerPage))
-          .map(v => check(v)))
+        range(Math.ceil(this.fakePropertiesData.length / itemsPerPage)).map(check))
 
     })
   })
@@ -128,7 +129,7 @@ contract("RealEstateMarket", accounts => {
       await addProperty(this.fakePropertyData, accounts[0], this.instance)
     })
 
-    it('should add buy a property', async function (){
+    it('should buy a property', async function (){
 
       const buyer = accounts[chance.integer({ min: 1, max: accounts.length - 1 })]
 
