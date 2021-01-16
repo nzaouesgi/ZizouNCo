@@ -52,12 +52,19 @@ contract("RealEstateMarket", accounts => {
         max: 30
       })).map(_v => createFakePropertyData())
 
-      await Promise.all(
+      for (const data of this.fakePropertiesData){
+        await addProperty(
+          data, 
+          chance.pickone(accounts), 
+          this.instance)
+      }
+
+      /*await Promise.all(
         this.fakePropertiesData
           .map(data => addProperty(
             data, 
             chance.pickone(accounts), 
-            this.instance)))
+            this.instance)))*/
 
     })
 
@@ -81,17 +88,17 @@ contract("RealEstateMarket", accounts => {
 
         range(pagination['1'].toNumber()).forEach((_v, i) => {
           
-          const y = i + (page * itemsPerPage)
+          const y = i + (page * itemsPerPage) 
 
           expect(properties[i].price).to.equal(this.fakePropertiesData[y].price.toString())
           expect(properties[i].location).to.equal(this.fakePropertiesData[y].location)
           expect(properties[i].description).to.equal(this.fakePropertiesData[y].description)
           expect(properties[i].forSale).to.be.true
           expect(parseInt(properties[i].createdAt)).to.be.a('number')
+        
         })
+      
       }
-
-      console.log({ length: this.fakePropertiesData.length })
 
       await Promise.all(
         range(Math.ceil(this.fakePropertiesData.length / itemsPerPage)).map(check))
