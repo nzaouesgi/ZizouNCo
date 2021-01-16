@@ -69,7 +69,7 @@ contract RealEstateMarket {
       }
   }
   
-  function buyProperty (uint _id) public payable {
+  function buyProperty (uint _id) external payable {
 
     require(_id < properties.length);
 
@@ -97,10 +97,19 @@ contract RealEstateMarket {
     ownerToProperties[msg.sender].push(_id);
   }
 
+<<<<<<< HEAD:contracts/RealEstateMarket.sol
   uint constant itemsPerPage = 25;
 
   function paginateProperties (uint _page) external view 
     returns (Property[itemsPerPage] memory items, uint itemsCount, uint itemsTotal) {
+=======
+  function countProperties() public returns (uint) {
+
+    return properties.length;
+  }
+
+  /*function getPropertiesData () external view returns (Property [100] memory){
+>>>>>>> front-end:contracts/RealEstateMarketContract.sol
     
     Property[itemsPerPage] memory _items;
 
