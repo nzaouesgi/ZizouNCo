@@ -5,9 +5,9 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
     const [estateListe, setEstateList] = useState([])
 
     const buyEstate = async (index, price) => {
-        await contract.methods
+        let result = await contract.methods
             .buyProperty(index)
-            .send({ from: accounts[0], value: web3.utils.toWei(price)})
+            .send({ from: accounts[0], value: price})
     }
 
     useEffect(() => {
@@ -58,7 +58,7 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
                                 <tr key={index}>
                                     <td>{estate.location}</td>
                                     <td>{estate.description}</td>
-                                    <td>{estate.price}</td>
+                                    <td>{web3.utils.fromWei(estate.price)}</td>
                                     {estate.ownerAddress !== accounts[0] && (
                                         <td>
                                             <button 
