@@ -1,5 +1,5 @@
 import React, { Component} from "react";
-import RealEstateMarketContract from "./contracts/RealEstateMarketContract.json";
+import RealEstateMarket from "./contracts/RealEstateMarket.json";
 import getWeb3 from "./getWeb3";
 import ListEstate from './ListEstate';
 import AddEstate from './AddEstate'
@@ -19,10 +19,10 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = RealEstateMarketContract.networks[networkId];
+      const deployedNetwork = RealEstateMarket.networks[networkId];
 
       const instance = new web3.eth.Contract(
-        RealEstateMarketContract.abi,
+        RealEstateMarket.abi,
         deployedNetwork && deployedNetwork.address,
       );
 
