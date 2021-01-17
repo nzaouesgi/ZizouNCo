@@ -162,5 +162,6 @@ export default {
     verifyDigest,
     downloadFile,
     computeDigest,
-    uploadFile
+    uploadFile,
+    getFile
 }
