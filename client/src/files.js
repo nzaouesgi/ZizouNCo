@@ -98,12 +98,12 @@ export async function computeDigest(file) {
 }
 
 /*
-    Verify a File object with an ArrayBuffer representing its expected digest.
+    Verify an ArrayBuffer representing a file's content with an ArrayBuffer representing its expected digest.
     Return a Promise wrapping true if verification succeeds, false otherwise.
 */
-export async function verifyDigest(file, digest) {
+export async function verifyDigest(fileContent, digest) {
 
-    const computed = await computeDigest(file)
+    const computed = await computeDigest(fileContent)
 
     for (const i of range(computed.byteLength))
         if (computed[i] !== digest[i])
