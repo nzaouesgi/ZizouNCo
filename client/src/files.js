@@ -60,7 +60,7 @@ async function getServer() {
 /* 
     Upload one file to server-side.
     Input must be a File object.
-    Returns a unique string identifier to be used when retrieving the file from the server.
+    Returns a Promise wrapping the unique string identifier to be used when retrieving the file from the server.
 */
 export async function uploadFile(file) {
 
@@ -89,7 +89,7 @@ export async function uploadFile(file) {
 /* 
     Get 32 bytes hash for one file
     Takes a File object as input.
-    Return an ArrayBuffer representing the file's content digest.
+    Return a Promise wrapping an ArrayBuffer representing the file's content digest.
 */
 export async function computeDigest(file) {
     const data = file instanceof File ? await readData(file) : file
@@ -99,7 +99,7 @@ export async function computeDigest(file) {
 
 /*
     Verify a File object with an ArrayBuffer representing its expected digest.
-    Return true if verification succeeds, false otherwise.
+    Return a Promise wrapping true if verification succeeds, false otherwise.
 */
 export async function verifyDigest(file, digest) {
 
@@ -115,7 +115,7 @@ export async function verifyDigest(file, digest) {
 /* 
     Retrieve a file from server.
     Takes the string identifier as a parameter.
-    Returns an ArrayBuffer representing the file content.
+    Returns a Promise wrapping an ArrayBuffer representing the file content.
 */
 export async function getFile(id) {
 
@@ -142,7 +142,7 @@ export async function getFile(id) {
     The data parameter is an ArrayBuffer representing the file content.
     The filename parameter is a string representing the name of the file when downloading.
 */
-export async function downloadFile(data, filename) {
+export function downloadFile(data, filename) {
 
     const url = window.URL.createObjectURL(new Blob([data]))
     const a = document.createElement('a')
