@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react'
+import Property from "./models"
 
 const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
 
+    const itemsPerPage = 25;
     const [estateListe, setEstateList] = useState([])
 
     const buyEstate = async (index, price) => {
@@ -15,21 +17,34 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
         const getContract = async () => {
 
             if(reload){
+                let currentPage = 0;
 
-                const numberOfProperties = await contract.methods.countProperties().call()
-                const allProperties = []
+                let propertiesStat = await contract.methods.paginateProperties(currentPage).call();
+                const allProperties = [];
+                const totalPropertiesCount = parseInt(propertiesStat["itemsCount"]); 
     
-                if(numberOfProperties > 0){
+                // if(numberOfProperties > 0){
     
-                    for (const index of Array(parseInt(numberOfProperties)).keys()){
+                //     for (const index of Array(parseInt(numberOfProperties)).keys()){
     
-                        const property = await contract.methods.properties(index).call()
-                        // console.log(property)
-                        allProperties.push(property)
+                //         const property = await contract.methods.properties(index).call()
+                //         // console.log(property)
+                //         allProperties.push(property)
+                //     }
+    
+                //     setEstateList(allProperties)
+                // }
+                for(let j = 0; j <= Math.trunc(totalPropertiesCount / itemsPerPage) ; j++) {
+                    for(let i = 0; i < totalPropertiesCount; i++) {
+                        allProperties.push(propertiesStat.items[i])
                     }
-    
-                    setEstateList(allProperties)
+                    currentPage++;
+                    propertiesStat = await contract.methods.paginateProperties(currentPage).call();
                 }
+                if (totalPropertiesCount > 0) {
+                    setEstateList(allProperties);
+                }
+                console.log("numberOfProperties", propertiesStat)
 
                 endReload()
             }
