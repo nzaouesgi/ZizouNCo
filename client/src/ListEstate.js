@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import { Link } from 'react-router-dom';
 import Property from "./models"
 
 const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
@@ -13,7 +14,6 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
     }
 
     useEffect(() => {
-
         const getContract = async () => {
 
             if(reload){
@@ -22,18 +22,7 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
                 let propertiesStat = await contract.methods.paginateProperties(currentPage).call();
                 const allProperties = [];
                 const totalPropertiesCount = parseInt(propertiesStat["itemsCount"]); 
-    
-                // if(numberOfProperties > 0){
-    
-                //     for (const index of Array(parseInt(numberOfProperties)).keys()){
-    
-                //         const property = await contract.methods.properties(index).call()
-                //         // console.log(property)
-                //         allProperties.push(property)
-                //     }
-    
-                //     setEstateList(allProperties)
-                // }
+
                 for(let j = 0; j <= Math.trunc(totalPropertiesCount / itemsPerPage) ; j++) {
                     for(let i = 0; i < totalPropertiesCount; i++) {
                         allProperties.push(propertiesStat.items[i])
@@ -53,10 +42,10 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
         getContract()
         
 
-    }, [contract, reload, endReload])
+    }, [])
 
     return (
-        <div>
+        <div class="center-div">
             { estateListe.length > 0 ? 
                 <table>
                     <thead>
@@ -74,6 +63,7 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
                                     <td>{estate.location}</td>
                                     <td>{estate.description}</td>
                                     <td>{web3.utils.fromWei(estate.price)}</td>
+                                    <td><Link to={'/property/' + estate.location}>More Info</Link></td>
                                     {estate.ownerAddress !== accounts[0] && (
                                         <td>
                                             <button 

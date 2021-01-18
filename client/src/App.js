@@ -3,6 +3,14 @@ import RealEstateMarket from "./contracts/RealEstateMarket.json";
 import getWeb3 from "./getWeb3";
 import ListEstate from './ListEstate';
 import AddEstate from './AddEstate'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import PropertyPage from './PropertyPage';
+import NoMatch from './NoMatch';
 
 import "./App.css";
 
@@ -43,6 +51,11 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
+      <Router>
+      <div>
+        <Switch>
+          <Route exact path="/">
+            
       <div className="App">
         <h1>Estate</h1>
         <ListEstate 
@@ -59,6 +72,18 @@ class App extends Component {
           web3={this.state.web3}
         />
       </div>
+          </Route>
+          <Route path='/property/:propertyName' children={<PropertyPage
+            accounts={this.state.accounts} 
+            contract={this.state.contract} 
+            web3={this.state.web3}
+          />}/>
+          <Route path='*'>
+            <NoMatch/>
+          </Route>
+        </Switch>
+      </div>
+      </Router>
     );
   }
 }
