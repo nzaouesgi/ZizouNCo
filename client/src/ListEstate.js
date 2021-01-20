@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom';
-import Property from "./models"
+// import Property from "./models"
 
 const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
 
@@ -8,7 +8,7 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
     const [estateListe, setEstateList] = useState([])
 
     const buyEstate = async (index, price) => {
-        let result = await contract.methods
+        await contract.methods
             .buyProperty(index)
             .send({ from: accounts[0], value: price})
     }
@@ -33,7 +33,7 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
                 if (totalPropertiesCount > 0) {
                     setEstateList(allProperties);
                 }
-                console.log("numberOfProperties", propertiesStat)
+                // console.log("numberOfProperties", propertiesStat)
 
                 endReload()
             }
@@ -42,43 +42,37 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
         getContract()
         
 
-    }, [])
+    }, [reload, endReload, contract])
 
     return (
-        <div class="center-div">
+        <div className="">
             { estateListe.length > 0 ? 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Location</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {estateListe
-                            .filter(estate => estate.forSale)
-                            .map((estate, index) => (
-                                <tr key={index}>
-                                    <td>{estate.location}</td>
-                                    <td>{estate.description}</td>
-                                    <td>{web3.utils.fromWei(estate.price)}</td>
-                                    <td><Link to={'/property/' + estate.location}>More Info</Link></td>
+                <div className="grid gap-5 md:gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grids-col-4">
+                    {estateListe
+                        .filter(estate => estate.forSale)
+                        .map((estate, index) => (
+                            <div className="max-w-sm rounded-lg shadow-lg bg-white py-5 px-8" key={index}>
+                                <div className="font-bold text-xl mb-2 capitalize">{estate.location}</div>
+                                <p className="text-gray-500 text-base">{estate.description}</p>
+                                <div className="mt-4">{`${web3.utils.fromWei(estate.price)} ethers`}</div>
+                                <div className="space-x-6 mt-6">
+                                    <Link to={'/property/' + estate.location} className="bg-blue-500 rounded-md font-medium px-4 py-2 text-sm leading-5 text-white hover:bg-blue-400">
+                                        Info
+                                    </Link>
                                     {estate.ownerAddress !== accounts[0] && (
-                                        <td>
-                                            <button 
-                                                onClick={() => buyEstate(index, estate.price)}>
-                                                Buy
-                                            </button>
-                                        </td>
+                                        <button onClick={() => buyEstate(index, estate.price)} className="bg-yellow-500 rounded-md font-medium px-4 py-2 text-sm leading-5 text-white hover:bg-yellow-400">
+                                            Buy
+                                        </button>
                                     )}
-                                </tr>
-                            )
-                        )}
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                        )
+                    )}
+                </div>
                 :
-                <h4>No estate</h4>
+                <div className="px-4 py-4 mx-auto bg-yellow-500 text-white font-medium rounded-md">
+                    No estate
+                </div>
             }
         </div>
     )
