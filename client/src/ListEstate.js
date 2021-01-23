@@ -34,7 +34,7 @@ const ListEstate = ({contract, accounts, web3}) => {
     }, [contract, currentPage])
 
     return (
-        <Presentation title="Estate" displayMessage message="Zizounco offer you best estates of the market">
+        <Presentation title="Estate" displayMessage message="Zizounco offers you best estates of the market">
             <div className="my-3 text-md font-medium">{`Page ${currentPage + 1}/${totalPage + 1}`}</div>
             { estateListe.length > 0 ? 
                 <div className="grid gap-5 md:gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grids-col-4">

@@ -10,7 +10,7 @@ const AddEstate = ({contract, accounts, web3}) => {
     const [isSuccess, setIsSuccess] = useState(false)
 
     return (
-        <Presentation title="Add new estate">
+        <Presentation title="Sell an estate">
             <div className="shadow-md mx-auto bg-white p-8 sm:max-w-lg space-y-4 rounded-md">
                 {isError && (
                     <div className="alert bg-red-600">{errorMessage}</div>
