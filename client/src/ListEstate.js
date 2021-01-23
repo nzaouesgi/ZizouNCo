@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom';
+import Presentation from './components/Presentation'
 // import Property from "./models"
 
-const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
+const ListEstate = ({contract, accounts, web3}) => {
 
     const itemsPerPage = 25;
     const [estateListe, setEstateList] = useState([])
+    const [currentPage, setCurrentPage] = useState(0)
+    const [totalPage, setTotalPage] = useState(0)
 
     const buyEstate = async (index, price) => {
         await contract.methods
@@ -16,36 +19,23 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
     useEffect(() => {
         const getContract = async () => {
 
-            if(reload){
-                let currentPage = 0;
+                console.log("Effect")
 
                 let propertiesStat = await contract.methods.paginateProperties(currentPage).call();
-                const allProperties = [];
-                const totalPropertiesCount = parseInt(propertiesStat["itemsCount"]); 
+                const totalCurrentPage = parseInt(propertiesStat.itemsCount);
+                const totalAllData = parseInt(propertiesStat.itemsTotal)
 
-                for(let j = 0; j <= Math.trunc(totalPropertiesCount / itemsPerPage) ; j++) {
-                    for(let i = 0; i < totalPropertiesCount; i++) {
-                        allProperties.push(propertiesStat.items[i])
-                    }
-                    currentPage++;
-                    propertiesStat = await contract.methods.paginateProperties(currentPage).call();
-                }
-                if (totalPropertiesCount > 0) {
-                    setEstateList(allProperties);
-                }
-                // console.log("numberOfProperties", propertiesStat)
-
-                endReload()
-            }
+                setEstateList(list => list.concat(propertiesStat.items.slice(0, totalCurrentPage)))
+                setTotalPage(Math.ceil(totalAllData / itemsPerPage) - 1)
         }
 
         getContract()
-        
 
-    }, [reload, endReload, contract])
+    }, [contract, currentPage])
 
     return (
-        <div className="">
+        <Presentation title="Estate" displayMessage message="Zizounco offer you best estates of the market">
+            <div className="my-3 text-md font-medium">{`Page ${currentPage + 1}/${totalPage + 1}`}</div>
             { estateListe.length > 0 ? 
                 <div className="grid gap-5 md:gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grids-col-4">
                     {estateListe
@@ -70,11 +60,21 @@ const ListEstate = ({contract, reload, accounts, endReload, web3}) => {
                     )}
                 </div>
                 :
-                <div className="px-4 py-4 mx-auto bg-yellow-500 text-white font-medium rounded-md">
+                <div className="alert bg-yellow-500">
                     No estate
                 </div>
             }
-        </div>
+            {currentPage < totalPage && (
+                <div className="mt-3 text-center">
+                    <button
+                        onClick={() => setCurrentPage(c => c + 1)}
+                        className="px-4 py-2 border mt-4 border-transparent text-sm leading-5 font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-400 focus:border-yellow-700"
+                    >
+                        Show more
+                    </button>
+                </div>
+            )}
+        </Presentation>
     )
 }
 

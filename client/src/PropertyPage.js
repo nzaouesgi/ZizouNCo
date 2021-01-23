@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { useParams } from "react-router-dom"
 import { Link } from 'react-router-dom';
+import Presentation from './components/Presentation'
 
 const PropertyPage = ({contract, accounts, web3}) => {
     const queryString = useParams();
@@ -10,19 +11,19 @@ const PropertyPage = ({contract, accounts, web3}) => {
         const getPropertyInfos = async () => {
                 const propertiesStat = await contract.methods.paginateProperties(0).call();
                 //console.log(propertiesStat)
-                let result = propertiesStat.items.find(e => e.location == queryString.propertyName)
+                let result = propertiesStat.items.find(e => e.location === queryString.propertyName)
                 console.log("Property found", result)
                 setProperty(result)
         }
 
         getPropertyInfos()
-    }, [])
+    }, [contract.methods, queryString])
     
 
     return (
-        <div>
+        <Presentation title="Detail">
             <Link to='/'>Home</Link>
-            <div class="center-div">
+            <div className="center-div">
                 {property !== null && property !== undefined && (
                     <div>
                         {
@@ -30,11 +31,11 @@ const PropertyPage = ({contract, accounts, web3}) => {
                         <h3>Address : {property.location}</h3>
                         <h3>Price : {property.price}</h3>
                         <h3>Description : {property.description}</h3>
-                        <h3>For sale : {new Boolean(property.forSale).toString()}</h3>
+                        <h3>For sale : {Boolean(property.forSale).toString()}</h3>
                     </div>
                 )}
             </div>
-        </div>
+        </Presentation>
     )
 }
 

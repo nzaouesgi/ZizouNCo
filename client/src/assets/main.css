@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .alert {
+    @apply px-4 py-4 mx-auto text-white font-medium rounded-md
+  }
+}
+
 @layer base {
   /* cyrillic-ext */
   @font-face {

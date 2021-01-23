@@ -3,7 +3,7 @@ import RealEstateMarket from "./contracts/RealEstateMarket.json";
 import getWeb3 from "./getWeb3";
 import ListEstate from "./ListEstate";
 import AddEstate from "./AddEstate";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PropertyPage from "./PropertyPage";
 import NoMatch from "./NoMatch";
 import Navbar from "./components/Navbar"
@@ -58,28 +58,20 @@ class App extends Component {
         <Navbar/>
           <div className="min-h-screen px-4 py-16 lg:py-20 lg:px-12">
             <div className="max-w-7xl mx-auto">
-
             <Switch>
               <Route exact path="/">
-                  <div className="text-center">
-                    <h1 className="text-3xl leading-9 tracking-tight font-extrabold text-gray-900 sm:text-4xl sm:leading-10">Estate</h1>
-                    <p className="my-4 max-w-2xl mx-auto text-xl leading-7 text-gray-500 sm:mt-4">Zizounco offer you best estates of the market</p>
-                  </div>
-                  <div className="mt-12">
                     <ListEstate
                       accounts={this.state.accounts}
                       contract={this.state.contract}
-                      reload={this.state.reloadList}
-                      endReload={() => this.setState({ reloadList: false })}
                       web3={this.state.web3}
                     />
-                    {/* <AddEstate
-                      accounts={this.state.accounts}
-                      contract={this.state.contract}
-                      askReload={() => this.setState({ reloadList: true })}
-                      web3={this.state.web3}
-                    /> */}
-                  </div>
+              </Route>
+              <Route path="/create">
+                <AddEstate
+                  accounts={this.state.accounts}
+                  contract={this.state.contract}
+                  web3={this.state.web3}
+                />
               </Route>
               <Route
                 path="/property/:propertyName"
