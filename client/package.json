@@ -3,17 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tailwindcss/forms": "^0.2.1",
+    "autoprefixer": "^10.2.3",
     "formik": "^2.2.5",
+    "install": "^0.13.0",
+    "npm": "^6.14.11",
+    "postcss": "^8.2.4",
+    "postcss-cli": "^8.3.1",
     "react": "16.11.0",
     "react-dom": "16.11.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.2.0",
+    "tailwindcss": "^2.0.2",
     "web3": "1.2.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm run build:css && react-scripts start",
+    "build": "npm run build:css &&react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:css": "postcss ./src/assets/main.css -o ./src/assets/output.css"
   },
   "eslintConfig": {
     "extends": "react-app"
