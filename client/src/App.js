@@ -74,7 +74,7 @@ class App extends Component {
                 />
               </Route>
               <Route
-                path="/property/:propertyName"
+                path="/property/:propertyIndex"
                 children={
                   <PropertyPage
                     accounts={this.state.accounts}
