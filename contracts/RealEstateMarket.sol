@@ -68,6 +68,19 @@ contract RealEstateMarket {
         propertyToDocuments[propertyId].push(documents.length - 1);
       }
   }
+
+  function getPropertyDocuments(uint propertyIndex) external view returns (Document[] memory propertyDocuments) {
+    require(propertyIndex < properties.length);
+
+    uint[] memory _items = propertyToDocuments[propertyIndex];
+    Document[] memory _propertyDocuments = new Document[](_items.length);
+
+    for(uint i = 0; i < _items.length; i++){
+      _propertyDocuments[i] = documents[_items[i]];
+    }
+    
+    return (_propertyDocuments);
+  }
   
   function buyProperty (uint _id) external payable {
 

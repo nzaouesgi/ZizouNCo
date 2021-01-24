@@ -7,9 +7,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PropertyPage from "./PropertyPage";
 import NoMatch from "./NoMatch";
 import Navbar from "./components/Navbar"
-import './assets/output.css'
-
-import "./App.css";
 
 class App extends Component {
   state = {

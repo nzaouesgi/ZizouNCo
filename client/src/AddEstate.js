@@ -9,40 +9,36 @@ const AddEstate = ({contract, accounts, web3}) => {
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
     const [isSuccess, setIsSuccess] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     return (
-        <Presentation title="Sell an estate">
+        <Presentation title="Sell an estate" goBack>
             <div className="shadow-md mx-auto bg-white p-8 sm:max-w-lg space-y-4 rounded-md">
-                {isError && (
+                {!isLoading && isError && (
                     <div className="alert bg-red-600">{errorMessage}</div>
                 )}
-                {isSuccess && (
+                {!isLoading && isSuccess && (
                     <div className="alert bg-green-600">Your estate has been added</div>
+                )}
+                {isLoading && (
+                    <div className="alert bg-yellow-500 space-x-3">
+                        ..Loading
+                    </div>
                 )}
                 <Formik 
                     initialValues={defaultValue}
                     onSubmit={async (values) => {
                         setIsError(false)
                         setIsSuccess(false)
+                        setIsLoading(true)
                         try {
                             console.log("values", values)
-                            let filesDigests = []
-                            let filesId = []
 
-                            Array.from(values.files).forEach(file => {
-                                computeDigest(file)
-                                .then((digest) => {
-                                    function buf2hex(buffer) { // buffer is an ArrayBuffer
-                                        return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
-                                    }
-                                    filesDigests.push("0x" + buf2hex(digest))
-                                    return uploadFile(file)
-                                })
-                                .then((id) => {
-                                    filesId.push(id)
-                                })
-                                .catch((err) => console.error(err))
-                            });
+                            console.log(values.files)
+                            const findFiles = Array.from(values.files)
+
+                            const filesId = await Promise.all(findFiles.map(file => uploadFile(file)))
+                            const filesDigests = await Promise.all(findFiles.map(file => computeDigest(file))).then(digests => digests.map(digest => web3.utils.bytesToHex(new Uint8Array(digest))))
 
                             console.log("filesId", filesId)
                             console.log("filesDigests", filesDigests)
@@ -62,8 +58,9 @@ const AddEstate = ({contract, accounts, web3}) => {
                             setIsError(true)
                             console.error(e)
                             setErrorMessage("Cannot add your estate")
+                        }finally{
+                            setIsLoading(false)
                         }
-                        
                     }}
                 >
                     {({
@@ -120,11 +117,10 @@ const AddEstate = ({contract, accounts, web3}) => {
                                     multiple={true}
                                     name="files"
                                     className="w-full my-2 rounded-md border-gray-300 focus:border-yellow-300 focus:outline-none focus:ring-3 focus:ring-yellow-300"
-                                    onChange={handleChange}
                                     onBlur={handleBlur}
                                     onChange={(event) => {
                                         setFieldValue("files", event.currentTarget.files);
-                                      }}
+                                    }}
                                 />
                                 {errors.files && touched.files && errors.files}
                             </div>
