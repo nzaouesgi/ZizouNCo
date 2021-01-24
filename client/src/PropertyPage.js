@@ -28,7 +28,7 @@ const PropertyPage = ({contract, accounts, web3}) => {
                         ))
                         .catch(() => Promise.reject("Can't get property document"))
                     
-                    console.log(documents)
+                    // console.log(documents)
 
                     setProperty(property)
                     setDocument(documents)
