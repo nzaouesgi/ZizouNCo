@@ -94,7 +94,7 @@ export async function uploadFile(file) {
 export async function computeDigest(file) {
     const data = file instanceof File ? await readData(file) : file
     const digest = await window.crypto.subtle.digest(hashAlgorithm, data)
-    return digest
+    return digest;
 }
 
 /*
@@ -134,7 +134,7 @@ export async function getFile(id) {
 
     const content = await res.arrayBuffer()
 
-    return content
+    return {content, ...data.files[entries[0]], code: data.code}
 }
 
 /* 

@@ -7,9 +7,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PropertyPage from "./PropertyPage";
 import NoMatch from "./NoMatch";
 import Navbar from "./components/Navbar"
-import './assets/output.css'
-
-import "./App.css";
 
 class App extends Component {
   state = {
@@ -74,7 +71,7 @@ class App extends Component {
                 />
               </Route>
               <Route
-                path="/property/:propertyName"
+                path="/property/:propertyIndex"
                 children={
                   <PropertyPage
                     accounts={this.state.accounts}

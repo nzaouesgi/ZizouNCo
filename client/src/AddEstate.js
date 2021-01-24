@@ -1,36 +1,54 @@
 import React, {useState} from 'react'
 import { Formik } from 'formik'
 import Presentation from './components/Presentation'
+import { computeDigest, uploadFile } from './files'
 
 const AddEstate = ({contract, accounts, web3}) => {
 
-    const defaultValue = {'price': 0, 'description': '', 'location': ''}
+    const defaultValue = {'price': 0, 'description': '', 'location': '', 'files': []}
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
     const [isSuccess, setIsSuccess] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     return (
-        <Presentation title="Add new estate">
+        <Presentation title="Sell an estate" goBack>
             <div className="shadow-md mx-auto bg-white p-8 sm:max-w-lg space-y-4 rounded-md">
-                {isError && (
+                {!isLoading && isError && (
                     <div className="alert bg-red-600">{errorMessage}</div>
                 )}
-                {isSuccess && (
+                {!isLoading && isSuccess && (
                     <div className="alert bg-green-600">Your estate has been added</div>
+                )}
+                {isLoading && (
+                    <div className="alert bg-yellow-500 space-x-3">
+                        ..Loading
+                    </div>
                 )}
                 <Formik 
                     initialValues={defaultValue}
                     onSubmit={async (values) => {
                         setIsError(false)
                         setIsSuccess(false)
+                        setIsLoading(true)
                         try {
+                            console.log("values", values)
+
+                            console.log(values.files)
+                            const findFiles = Array.from(values.files)
+
+                            const filesId = await Promise.all(findFiles.map(file => uploadFile(file)))
+                            const filesDigests = await Promise.all(findFiles.map(file => computeDigest(file))).then(digests => digests.map(digest => web3.utils.bytesToHex(new Uint8Array(digest))))
+
+                            console.log("filesId", filesId)
+                            console.log("filesDigests", filesDigests)
 
                             await contract.methods.addProperty(
                                 web3.utils.toWei(values.price), 
                                 values.location, 
                                 values.description, 
-                                [], 
-                                []
+                                filesId, 
+                                filesDigests
                             ).send({ from: accounts[0] })
 
                             setIsSuccess(true)
@@ -38,9 +56,11 @@ const AddEstate = ({contract, accounts, web3}) => {
                         }catch(e){
 
                             setIsError(true)
+                            console.error(e)
                             setErrorMessage("Cannot add your estate")
+                        }finally{
+                            setIsLoading(false)
                         }
-                        
                     }}
                 >
                     {({
@@ -50,7 +70,8 @@ const AddEstate = ({contract, accounts, web3}) => {
                         handleChange,
                         handleBlur,
                         handleSubmit,
-                        isSubmitting
+                        isSubmitting,
+                        setFieldValue
                     }) => (
                         <form onSubmit={handleSubmit}>
                             <div>
@@ -88,6 +109,20 @@ const AddEstate = ({contract, accounts, web3}) => {
                                     value={values.price}
                                 />
                                 {errors.price && touched.price && errors.price}
+                            </div>
+                            <div>
+                                <label className="block text-md font-medium">Documents</label>
+                                <input
+                                    type="file"
+                                    multiple={true}
+                                    name="files"
+                                    className="w-full my-2 rounded-md border-gray-300 focus:border-yellow-300 focus:outline-none focus:ring-3 focus:ring-yellow-300"
+                                    onBlur={handleBlur}
+                                    onChange={(event) => {
+                                        setFieldValue("files", event.currentTarget.files);
+                                    }}
+                                />
+                                {errors.files && touched.files && errors.files}
                             </div>
                             <button 
                                 type="submit" 

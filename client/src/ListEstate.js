@@ -34,7 +34,7 @@ const ListEstate = ({contract, accounts, web3}) => {
     }, [contract, currentPage])
 
     return (
-        <Presentation title="Estate" displayMessage message="Zizounco offer you best estates of the market">
+        <Presentation title="Estate" displayMessage message="ZizouNCo offers you the best estates in the market">
             <div className="my-3 text-md font-medium">{`Page ${currentPage + 1}/${totalPage + 1}`}</div>
             { estateListe.length > 0 ? 
                 <div className="grid gap-5 md:gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grids-col-4">
@@ -46,7 +46,7 @@ const ListEstate = ({contract, accounts, web3}) => {
                                 <p className="text-gray-500 text-base">{estate.description}</p>
                                 <div className="mt-4">{`${web3.utils.fromWei(estate.price)} ethers`}</div>
                                 <div className="space-x-6 mt-6">
-                                    <Link to={'/property/' + estate.location} className="bg-blue-500 rounded-md font-medium px-4 py-2 text-sm leading-5 text-white hover:bg-blue-400">
+                                    <Link to={'/property/' + currentPage * itemsPerPage + index} className="bg-blue-500 rounded-md font-medium px-4 py-2 text-sm leading-5 text-white hover:bg-blue-400">
                                         Info
                                     </Link>
                                     {estate.ownerAddress !== accounts[0] && (

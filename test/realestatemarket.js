@@ -124,6 +124,9 @@ contract("RealEstateMarket", accounts => {
         expect(v.ownerAddress).to.equal(account.toString())
       })
 
+      await expect(this.instance.getPropertyDocuments.call(0)).to.be.fulfilled.then(v => {
+        expect(v).to.have.lengthOf(this.fakePropertyData.documents.length)
+      })
     })
 
   })
