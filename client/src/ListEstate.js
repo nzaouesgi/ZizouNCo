@@ -13,6 +13,7 @@ const ListEstate = ({contract, accounts, web3}) => {
     const [isError, setIsError] = useState(false)
     const [isSuccess, setIsSuccess] = useState(false)
     const [statusMessage, setStatusMessage] = useState("")
+    const [askBuying, setAskBuying] = useState(false)
 
     useEffect(() => {
         const getContract = async () => {
@@ -47,6 +48,7 @@ const ListEstate = ({contract, accounts, web3}) => {
         setIsError(false)
         setIsSuccess(false)
         setIsLoading(false)
+        setAskBuying(true)
 
         contract.methods
             .buyProperty(estateIndex)
@@ -70,6 +72,7 @@ const ListEstate = ({contract, accounts, web3}) => {
             })
             .finally(() => {
                 setIsLoading(false)
+                setAskBuying(false)
             })
         
     }
@@ -101,7 +104,7 @@ const ListEstate = ({contract, accounts, web3}) => {
                                         </Link>
                                     )}
                                     {estate.forSale && estate.ownerAddress !== accounts[0] && (
-                                        <button onClick={() => handleBuyEstate(index, estate)} className="bg-yellow-500 rounded-md font-medium px-4 py-2 text-sm leading-5 text-white hover:bg-yellow-400">
+                                        <button disabled={askBuying} onClick={() => handleBuyEstate(index, estate)} className="bg-yellow-500 rounded-md font-medium px-4 py-2 text-sm leading-5 text-white hover:bg-yellow-400 disabled:opacity-50">
                                             Buy
                                         </button>
                                     )}
