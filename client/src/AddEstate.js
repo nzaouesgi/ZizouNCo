@@ -32,16 +32,13 @@ const AddEstate = ({contract, accounts, web3}) => {
                         setIsSuccess(false)
                         setIsLoading(true)
                         try {
-                            console.log("values", values)
-
-                            console.log(values.files)
                             const findFiles = Array.from(values.files)
 
                             const filesId = await Promise.all(findFiles.map(file => uploadFile(file)))
                             const filesDigests = await Promise.all(findFiles.map(file => computeDigest(file))).then(digests => digests.map(digest => web3.utils.bytesToHex(new Uint8Array(digest))))
 
-                            console.log("filesId", filesId)
-                            console.log("filesDigests", filesDigests)
+                            // console.log("filesId", filesId)
+                            // console.log("filesDigests", filesDigests)
 
                             await contract.methods.addProperty(
                                 web3.utils.toWei(values.price), 
@@ -126,8 +123,8 @@ const AddEstate = ({contract, accounts, web3}) => {
                             </div>
                             <button 
                                 type="submit" 
-                                disabled={isSubmitting}
-                                className="px-4 py-2 border mt-4 border-transparent text-sm leading-5 font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-400 focus:border-yellow-700"
+                                disabled={isSubmitting || isLoading}
+                                className="px-4 py-2 border mt-4 border-transparent text-sm leading-5 font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-400 focus:border-yellow-700 disabled:opacity-50"
                             >
                                 Submit
                             </button>
